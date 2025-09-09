@@ -273,6 +273,42 @@ app.post('/posts/html', (request, response) => {
   })
 })
 
+/*
+  POST /actions/subscribers
+
+  Example request:
+
+  { subscribers: [
+    {
+      id: 123
+    }
+  ] }
+*/
+app.post('/actions/subscribers', (request, response) => {
+  // Access the subscribers to act on with:
+  console.log('subscribers', request.body.subscribers)
+  console.log('settings', request.body.settings)
+
+  const successes = request.body.subscribers.map(subscriber => ({
+    subscriber_id: subscriber.id,
+  }))
+
+  let failures = []
+  if (request.body.subscribers.length > 1) {
+    failures.push(successes.pop())
+  }
+
+  // Return your search results in the following shape. We'll send the `value`
+  // the user selects (along with any other settings) to your HTML endpoint.
+  response.json({
+    code: 200,
+    data: {
+      successes,
+      failures,
+    },
+  })
+})
+
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`)
 })
